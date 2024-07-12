@@ -14,21 +14,21 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/tkibnyusuf/uber-clone.git'
+                git branch: 'main', url: 'https://github.com/shindara17/uber-clone.git'
             }
         }
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-scanner') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=DevsecOp_project \
-                    -Dsonar.projectKey=DevsecOp_project'''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Devsecop_Project \
+                    -Dsonar.projectKey=Devsecop_Project'''
                 }
             }
         }
         stage("quality gate"){
            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar token'
                 }
             }
         }
@@ -56,14 +56,14 @@ pipeline{
                        sh "docker system prune -a -f --volumes"
                        sh "docker build -t uber ."
                        sh "docker tag uber tkibnyusuf/uber:latest "
-                       sh "docker push tkibnyusuf/uber:latest "
+                       sh "docker push shindara17/uber:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image tkibnyusuf/uber:latest > trivyimage.json"
+                sh "trivy image shindara17/uber:latest > trivyimage.json"
             }
         }        
         stage('Deploy to kubernetes'){
